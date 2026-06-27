@@ -686,6 +686,8 @@ message:"Favourite removed"
 /* FORGOT PASSWORD */
 
 app.post("/forgot-password",(req,res)=>{
+console.log("Forgot password request received");
+
 
 const {email}=req.body;
 

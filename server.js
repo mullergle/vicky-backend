@@ -677,6 +677,7 @@ app.post("/forgot-password", async (req,res)=>{
 
 console.log("Forgot password request received");
 
+
 const {email}=req.body;
 
 
@@ -724,18 +725,25 @@ db.run(
 [email,code,Date.now()],
 
 
-(err)=>{
+async (err)=>{
 
 
 if(err){
 
 return res.json({
+
 success:false,
+
 message:"Could not save code"
+
 });
 
 }
 
+
+
+
+try{
 
 
 await resend.emails.send({
@@ -744,15 +752,20 @@ from:"onboarding@resend.dev",
 
 to:email,
 
-subject:"Password Reset Code",
+subject:"Lavick Password Reset Code",
 
 html:`
+
 <h2>Lavick Password Reset</h2>
+
 <p>Your verification code is:</p>
+
 <h1>${code}</h1>
+
 `
 
 });
+
 
 
 res.json({
@@ -763,19 +776,40 @@ message:"Reset code sent"
 
 });
 
+
+
+}catch(error){
+
+
+console.log(error);
+
+
+res.json({
+
+success:false,
+
+message:"Email sending failed"
+
+});
+
+
 }
+
+
+
+}
+
 
 );
 
 
 }
 
-);
-
-
-}
 
 );
+
+
+});
 
 
 });

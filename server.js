@@ -673,7 +673,7 @@ message:"Favourite removed"
 
 /* FORGOT PASSWORD */
 
-app.post("/forgot-password",(req,res)=>{
+app.post("/forgot-password", async (req,res)=>{
 console.log("Forgot password request received");
 
 
@@ -724,51 +724,6 @@ message:"Could not save code"
 
 }
 
-transporter.sendMail({
-
-from:'"LaVick Stitches" <lavickstitche@gmail.com>',
-
-to:email,
-
-subject:"LaVick Stitches Password Reset Code",
-
-text:`Your verification code is: ${code}`
-
-},(error,info)=>{
-
-console.log("Mail error:", error);
-console.log("Mail info:", info);
-
-
-if(error){
-
-return res.json({
-success:false,
-message:error.message
-});
-
-}
-
-res.json({
-success:true,
-message:"Verification code sent"
-});
-
-});
-
-}
-
-);
-
-}
-
-);
-
-}
-
-);
-
-});
 
 
 

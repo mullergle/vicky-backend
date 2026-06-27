@@ -738,16 +738,30 @@ message:"Could not save code"
 
 
 
+await resend.emails.send({
+
+from:"onboarding@resend.dev",
+
+to:email,
+
+subject:"Password Reset Code",
+
+html:`
+<h2>Lavick Password Reset</h2>
+<p>Your verification code is:</p>
+<h1>${code}</h1>
+`
+
+});
+
+
 res.json({
 
 success:true,
 
-message:"Reset code generated",
-
-code:code
+message:"Reset code sent"
 
 });
-
 
 }
 

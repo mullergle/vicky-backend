@@ -695,7 +695,7 @@ db.get(
 "SELECT * FROM users WHERE email=?",
 [email],
 (err,user)=>{
-
+console.log("User check:", user);
 if(err){
 
 return res.json({

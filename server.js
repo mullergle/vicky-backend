@@ -22,6 +22,21 @@ pass:"vkighagtfqilybac"
 }
 
 });
+
+transporter.verify(function(error, success){
+
+if(error){
+
+console.log("Transport Error:", error);
+
+}else{
+
+console.log("Mail server is ready");
+
+}
+
+});
+
 const app = express();
 
 app.use(cors());

@@ -748,8 +748,9 @@ text:`Your verification code is: ${code}`
 
 },(error,info)=>{
 
-console.log(error);
-console.log(info);
+console.log("Mail error:", error);
+console.log("Mail info:", info);
+
 
 if(error){
 

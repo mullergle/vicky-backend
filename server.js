@@ -674,16 +674,19 @@ message:"Favourite removed"
 /* FORGOT PASSWORD */
 
 app.post("/forgot-password", async (req,res)=>{
+
 console.log("Forgot password request received");
 
-
 const {email}=req.body;
+
 
 db.get(
 "SELECT * FROM users WHERE email=?",
 [email],
+
 (err,user)=>{
-console.log("User check:", user);
+
+
 if(err){
 
 return res.json({
@@ -692,6 +695,7 @@ message:"Database error"
 });
 
 }
+
 
 if(!user){
 
@@ -702,18 +706,26 @@ message:"Email not found"
 
 }
 
+
+
 const code = Math.floor(100000 + Math.random() * 900000).toString();
+
+
 
 db.run(
 "DELETE FROM reset_codes WHERE email=?",
 [email],
+
 ()=>{
+
 
 db.run(
 "INSERT INTO reset_codes(email,code,createdAt) VALUES(?,?,?)",
 [email,code,Date.now()],
 
+
 (err)=>{
+
 
 if(err){
 
@@ -726,11 +738,43 @@ message:"Could not save code"
 
 
 
+res.json({
+
+success:true,
+
+message:"Reset code generated",
+
+code:code
+
+});
+
+
+}
+
+);
+
+
+}
+
+);
+
+
+}
+
+);
+
+
+});
+
+
+
 
 
 /* VERIFY CODE */
 
+
 app.post("/verify-code",(req,res)=>{
+
 
 const {email,code}=req.body;
 
@@ -741,17 +785,22 @@ db.get(
 
 [email,code],
 
+
 (err,row)=>{
 
 
 if(err){
 
 return res.json({
+
 success:false,
+
 message:"Database error"
+
 });
 
 }
+
 
 
 if(row){
@@ -765,6 +814,7 @@ message:"Code verified"
 });
 
 }
+
 
 
 res.json({
@@ -782,11 +832,20 @@ message:"Invalid code"
 
 
 });
+
+
+
+
+
+
 /* RESET PASSWORD */
+
 
 app.post("/reset-password",(req,res)=>{
 
+
 const {email,password}=req.body;
+
 
 
 db.run(
@@ -794,6 +853,7 @@ db.run(
 "UPDATE users SET password=? WHERE email=?",
 
 [password,email],
+
 
 function(err){
 
@@ -809,6 +869,7 @@ message:"Password update failed"
 });
 
 }
+
 
 
 res.json({
@@ -827,10 +888,15 @@ message:"Password updated successfully"
 
 });
 
+
+
+
+
 const PORT = process.env.PORT || 3000;
 
-app.listen(PORT, () => {
 
-console.log("Server running on port " + PORT);
+app.listen(PORT,()=>{
+
+console.log("Server running on port "+PORT);
 
 });

@@ -9,19 +9,6 @@ const { Resend } = require("resend");
 const resend = new Resend(process.env.RESEND_API_KEY);
 
 
-transporter.verify(function(error, success){
-
-if(error){
-
-console.log("Transport Error:", error);
-
-}else{
-
-console.log("Mail server is ready");
-
-}
-
-});
 
 const app = express();
 

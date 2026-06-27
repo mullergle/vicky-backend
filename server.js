@@ -4,24 +4,10 @@ const cors = require("cors");
 const multer = require("multer");
 const path = require("path");
 const fs = require("fs");
-const nodemailer = require("nodemailer");
-const transporter = nodemailer.createTransport({
+const { Resend } = require("resend");
 
-service:"gmail",
+const resend = new Resend(process.env.RESEND_API_KEY);
 
-auth:{
-
-user:"lavickstitche@gmail.com",
-
-pass:"vkighagtfqilybac"
-
-},
-
-connectionTimeout:60000,
-greetingTimeout:60000,
-socketTimeout:60000
-
-});
 
 transporter.verify(function(error, success){
 

@@ -748,7 +748,7 @@ try{
 
 await resend.emails.send({
 
-from:"lavickstitche@gmail.com",
+from:"onboarding@resend.dev",
 
 to:email,
 

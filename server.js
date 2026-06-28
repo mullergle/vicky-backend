@@ -3,17 +3,10 @@ const sqlite3 = require("sqlite3").verbose();
 const cors = require("cors");
 const multer = require("multer");
 const cloudinary = require("cloudinary").v2;
-const { CloudinaryStorage } = require("multer-storage-cloudinary");
 
-const storage = new CloudinaryStorage({
-  cloudinary: cloudinary,
-  params: {
-    folder: "lavick",
-    allowed_formats: ["jpg", "jpeg", "png", "webp"]
-  }
+const upload = multer({
+  storage: multer.memoryStorage()
 });
-
-const upload = multer({ storage });
 const path = require("path");
 const fs = require("fs");
 const { Resend } = require("resend");

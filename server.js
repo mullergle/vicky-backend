@@ -387,6 +387,11 @@ price,
 category,
 description
 } = req.body;
+if (!req.file) {
+  return res.json({
+    message: "Please select an image"
+  });
+}
 
 
 try{

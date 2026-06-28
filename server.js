@@ -2,12 +2,18 @@ const express = require("express");
 const sqlite3 = require("sqlite3").verbose();
 const cors = require("cors");
 const multer = require("multer");
+const cloudinary = require("cloudinary").v2;
+const { CloudinaryStorage } = require("multer-storage-cloudinary");
 const path = require("path");
 const fs = require("fs");
 const { Resend } = require("resend");
 
 const resend = new Resend(process.env.RESEND_API_KEY);
-
+cloudinary.config({
+  cloud_name: "dycxrexwg",
+  api_key: "769269774738925",
+  api_secret: "ganhPMe_Le-nZFfUie_kjZI7FGQ"
+});
 
 
 const app = express();
@@ -20,19 +26,15 @@ app.use("/uploads", express.static("uploads"));
 if (!fs.existsSync("uploads")) {
     fs.mkdirSync("uploads", { recursive: true });
 }
-const storage = multer.diskStorage({
-
-destination:(req,file,cb)=>{
-cb(null,"uploads/");
-},
-
-filename:(req,file,cb)=>{
-cb(null, Date.now() + path.extname(file.originalname));
-}
-
+const storage = new CloudinaryStorage({
+  cloudinary: cloudinary,
+  params: {
+    folder: "lavick",
+    allowed_formats: ["jpg", "jpeg", "png", "webp"]
+  }
 });
 
-const upload = multer({storage});
+const upload = multer({ storage });
 
 /* SQLITE */
 const db = new sqlite3.Database("lavick.db",(err)=>{
@@ -392,7 +394,7 @@ description
 } = req.body;
 
 const image = req.file
-? "/uploads/" + req.file.filename
+? req.file.path
 : "";
 
 db.run(
@@ -436,7 +438,7 @@ app.post("/sliders", upload.single("image"), (req,res)=>{
 
 
 const image = req.file
-? "/uploads/" + req.file.filename
+? req.file.path
 : "";
 
 

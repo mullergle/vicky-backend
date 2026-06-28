@@ -28,13 +28,7 @@ app.use("/uploads", express.static("uploads"));
 if (!fs.existsSync("uploads")) {
     fs.mkdirSync("uploads", { recursive: true });
 }
-const storage = new CloudinaryStorage({
-  cloudinary: cloudinary,
-  params: {
-    folder: "lavick",
-    allowed_formats: ["jpg", "jpeg", "png", "webp"]
-  }
-});
+
 
 
 /* SQLITE */

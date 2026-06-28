@@ -36,7 +36,6 @@ const storage = new CloudinaryStorage({
   }
 });
 
-const upload = multer({ storage });
 
 /* SQLITE */
 const db = new sqlite3.Database("lavick.db",(err)=>{

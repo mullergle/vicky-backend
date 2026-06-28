@@ -379,7 +379,7 @@ res.json(rows);
 });
 
 /* UPLOAD DESIGN WITH IMAGE */
-app.post("/designs", upload.single("image"), (req,res)=>{
+app.post("/designs", upload.single("image"), async (req,res)=>{
 
 const {
 name,
@@ -388,9 +388,19 @@ category,
 description
 } = req.body;
 
-const image = req.file
-? req.file.path
-: "";
+
+try{
+
+const result = await cloudinary.uploader.upload(
+`data:${req.file.mimetype};base64,${req.file.buffer.toString("base64")}`,
+{
+folder:"lavick"
+}
+);
+
+
+const image = result.secure_url;
+
 
 db.run(
 "INSERT INTO designs(name,price,category,description,image) VALUES(?,?,?,?,?)",
@@ -401,15 +411,17 @@ category,
 description,
 image
 ],
+
 function(err){
 
 if(err){
 
-res.json({
+return res.json({
 message:err.message
 });
 
-}else{
+}
+
 
 res.json({
 message:"Design uploaded",
@@ -417,13 +429,22 @@ id:this.lastID,
 image:image
 });
 
-}
 
 }
+
 );
 
+
+}catch(error){
+
+res.json({
+message:error.message
 });
 
+}
+
+
+});
 
 
 

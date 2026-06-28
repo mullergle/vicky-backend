@@ -3,10 +3,10 @@ const sqlite3 = require("sqlite3").verbose();
 const cors = require("cors");
 const multer = require("multer");
 const cloudinary = require("cloudinary").v2;
+const { CloudinaryStorage } = require("multer-storage-cloudinary");
 const path = require("path");
 const fs = require("fs");
 const { Resend } = require("resend");
-
 const resend = new Resend(process.env.RESEND_API_KEY);
 cloudinary.config({
   cloud_name: "dycxrexwg",

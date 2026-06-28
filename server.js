@@ -6,6 +6,7 @@ const cloudinary = require("cloudinary").v2;
 
 const upload = multer({
   storage: multer.memoryStorage()
+  
 });
 const path = require("path");
 const fs = require("fs");

@@ -455,13 +455,24 @@ message:error.message
 
 /* UPLOAD SLIDER IMAGE */
 
-app.post("/sliders", upload.single("image"), (req,res)=>{
+app.post("/sliders", upload.single("image"), async (req,res)=>{
 
+if (!req.file) {
+return res.json({
+message:"Please select an image"
+});
+}
 
-const image = req.file
-? req.file.path
-: "";
+try{
 
+const result = await cloudinary.uploader.upload(
+`data:${req.file.mimetype};base64,${req.file.buffer.toString("base64")}`,
+{
+folder:"lavick"
+}
+);
+
+const image = result.secure_url;
 
 db.run(
 "INSERT INTO sliders(image) VALUES(?)",
@@ -469,30 +480,32 @@ db.run(
 
 function(err){
 
-
 if(err){
 
-res.json({
+return res.json({
 message:err.message
 });
 
-}else{
-
+}
 
 res.json({
 message:"Slider uploaded",
 image:image
 });
 
+}
+
+);
+
+}catch(error){
+
+res.json({
+message:error.message
+});
 
 }
 
-
 });
-
-
-});
-
 
 
 /* GET SLIDER IMAGES */

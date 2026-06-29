@@ -15,6 +15,7 @@ const fs = require("fs");
 const { Resend } = require("resend");
 const resend = new Resend(process.env.RESEND_API_KEY);
 cloudinary.config({
+  
   cloud_name: "dycxrexwg",
   api_key: "769269774738925",
   api_secret: "ganhPMe_Le-nZFfUie_kjZI7FGQ"

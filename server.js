@@ -313,7 +313,7 @@ app.get("/user/:email",(req,res)=>{
 const email = req.params.email;
 
 db.get(
-"SELECT name,email,accountType FROM users WHERE email=?",
+'SELECT name, email, "accountType" FROM users WHERE email=?',
 [email],
 
 (err,row)=>{

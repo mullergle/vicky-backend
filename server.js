@@ -1,5 +1,7 @@
+require("dotenv").config();
+
 const express = require("express");
-const sqlite3 = require("sqlite3").verbose();
+const { Pool } = require("pg");
 const cors = require("cors");
 const multer = require("multer");
 const cloudinary = require("cloudinary").v2;
@@ -30,16 +32,121 @@ if (!fs.existsSync("uploads")) {
     fs.mkdirSync("uploads", { recursive: true });
 }
 
+/* POSTGRES */
 
+const pool = new Pool({
+  connectionString: process.env.DATABASE_URL,
+  ssl: {
+    rejectUnauthorized:false
+  }
+});
+const db = {
 
-/* SQLITE */
-const db = new sqlite3.Database("lavick.db",(err)=>{
+run: (query, params, callback)=>{
 
-if(err){
-console.log(err.message);
-}else{
-console.log("SQLite connected");
+let index = 1;
+
+query = query.replace(/\?/g, ()=>`$${index++}`);
+
+pool.query(query, params)
+
+.then(result=>{
+
+if(callback){
+callback(null,{
+lastID: result.rows[0]?.id
+});
 }
+
+})
+
+.catch(err=>{
+
+console.log(err);
+
+if(callback){
+callback(err);
+}
+
+});
+
+},
+
+
+get: (query, params, callback)=>{
+
+let index = 1;
+
+query = query.replace(/\?/g, ()=>`$${index++}`);
+
+pool.query(query, params)
+
+.then(result=>{
+
+if(callback){
+callback(null,result.rows[0]);
+}
+
+})
+
+.catch(err=>{
+
+console.log(err);
+
+if(callback){
+callback(err);
+}
+
+});
+
+},
+
+
+all: (query, params, callback)=>{
+
+let index = 1;
+
+query = query.replace(/\?/g, ()=>`$${index++}`);
+
+pool.query(query, params)
+
+.then(result=>{
+
+if(callback){
+callback(null,result.rows);
+}
+
+})
+
+.catch(err=>{
+
+console.log(err);
+
+if(callback){
+callback(err);
+}
+
+});
+
+}
+
+};
+
+
+
+pool.connect()
+
+.then(client=>{
+
+console.log("PostgreSQL connected");
+
+client.release();
+
+})
+
+.catch(err=>{
+
+console.log("PostgreSQL connection error:", err.message);
 
 });
 
@@ -47,7 +154,7 @@ console.log("SQLite connected");
 
 db.run(`
 CREATE TABLE IF NOT EXISTS users(
-id INTEGER PRIMARY KEY AUTOINCREMENT,
+id SERIAL PRIMARY KEY,
 name TEXT,
 email TEXT UNIQUE,
 password TEXT,
@@ -55,11 +162,10 @@ accountType TEXT DEFAULT 'Regular'
 )
 `);
 
-
 /* ADMINS TABLE */
 db.run(`
 CREATE TABLE IF NOT EXISTS admins(
-id INTEGER PRIMARY KEY AUTOINCREMENT,
+id SERIAL PRIMARY KEY,
 email TEXT,
 password TEXT
 )
@@ -86,7 +192,7 @@ db.run(
 /* FAVOURITES TABLE */
 db.run(`
 CREATE TABLE IF NOT EXISTS favourites(
-id INTEGER PRIMARY KEY AUTOINCREMENT,
+id SERIAL PRIMARY KEY,
 email TEXT,
 name TEXT,
 price TEXT,
@@ -97,7 +203,7 @@ image TEXT
 /* DESIGNS TABLE */
 db.run(`
 CREATE TABLE IF NOT EXISTS designs(
-id INTEGER PRIMARY KEY AUTOINCREMENT,
+id SERIAL PRIMARY KEY,
 name TEXT,
 price TEXT,
 category TEXT,
@@ -110,7 +216,7 @@ image TEXT
 
 db.run(`
 CREATE TABLE IF NOT EXISTS sliders(
-id INTEGER PRIMARY KEY AUTOINCREMENT,
+id SERIAL PRIMARY KEY,
 image TEXT
 )
 `);
@@ -119,7 +225,7 @@ image TEXT
 
 db.run(`
 CREATE TABLE IF NOT EXISTS reset_codes(
-id INTEGER PRIMARY KEY AUTOINCREMENT,
+id SERIAL PRIMARY KEY,
 email TEXT,
 code TEXT,
 createdAt INTEGER
